@@ -1,6 +1,7 @@
 # CSE205_Project3
-如果您不是小组成员，请不要参与编辑，谢谢！不论您的想法有多棒，我不会通过陌生人的合并请求。
-This repository is for our project group only. Please do not participate in editing. Although your idea may be excellent, I cannot pass your merge request.
+*如果您不是小组成员，请不要参与编辑，谢谢！不论您的想法有多棒，我不会通过陌生人的合并请求。
+
+*This repository is for our project group only. Please do not participate in editing. Although your idea may be excellent, I cannot pass your merge request.
 
 Sam, Synthesis, Jimmy
 
