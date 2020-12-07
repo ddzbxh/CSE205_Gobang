@@ -5,7 +5,7 @@ import time
 
 # 全局变量：
 a = 1
-size = 18
+size = 15
 
 # 初始化棋盘：
 # 【https://blog.csdn.net/qq_25436597/article/details/79334240】
@@ -54,7 +54,7 @@ def clean():
 
 def printBoard(a):
     # 打印棋盘主体：
-    print("   1      3      5      7      9     11     13     15     17     ")
+    print("   1      3      5      7      9     11     13     15")
     for i in range(size):
         if i < 9:
             print(i + 1, end=" ")
