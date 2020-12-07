@@ -31,6 +31,7 @@ def bw(a):
                 else:
                     mainList[x][y] = 255
                     break
+        testWin(x, y, mainList[x][y])
     else:
         while True:
             try:
@@ -45,6 +46,7 @@ def bw(a):
                 else:
                     mainList[x][y] = 128
                     break
+        testWin(x, y, mainList[x][y])
 
 def clean():
     for i in range(size):
@@ -69,6 +71,17 @@ def printBoard(a):
 
     bw(a)
     clean()
+
+def testWin(xIn, yIn, numIn):
+    print(xIn, yIn, numIn)
+    if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
+        xIn = xIn + 1
+        if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
+            xIn = xIn + 1
+            if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
+                xIn = xIn + 1
+                if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
+                    print("you win")
 
 # 主体：l
 while True:
