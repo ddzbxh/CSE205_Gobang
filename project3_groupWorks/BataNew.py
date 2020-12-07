@@ -119,6 +119,42 @@ def testWin(xIn, yIn, numIn):
             if countYW >= 5:
                 print("you win YW")
 
+    for i in range(size):
+        for j in range(size):
+            try:
+                if mainList[i][j] != 1:
+                    if mainList[i][j] == mainList[i + 1][j - 1]:
+                        i += 1
+                        j += 1
+                        if mainList[i][j] == mainList[i + 1][j - 1]:
+                            i += 1
+                            j += 1
+                            if mainList[i][j] == mainList[i + 1][j - 1]:
+                                i += 1
+                                j += 1
+                                if mainList[i][j] == mainList[i + 1][j - 1]:
+                                    print("you win")
+            except BaseException:
+                error = 1
+    for i in range(size):
+        for j in range(size):
+            try:
+                if mainList[i][j] != 1:
+                    if mainList[i][j] == mainList[i - 1][j + 1]:
+                        i += 1
+                        j += 1
+                        if mainList[i][j] == mainList[i - 1][j + 1]:
+                            i += 1
+                            j += 1
+                            if mainList[i][j] == mainList[i - 1][j + 1]:
+                                i += 1
+                                j += 1
+                                if mainList[i][j] == mainList[i - 1][j + 1]:
+                                    print("you win")
+            except BaseException:
+                error = 1
+
+
 # 主体：l
 while True:
     printBoard(a)
