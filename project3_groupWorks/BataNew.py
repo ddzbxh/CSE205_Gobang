@@ -74,14 +74,50 @@ def printBoard(a):
 
 def testWin(xIn, yIn, numIn):
     print(xIn, yIn, numIn)
-    if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
-        xIn = xIn + 1
-        if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
-            xIn = xIn + 1
-            if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
-                xIn = xIn + 1
-                if mainList[xIn][yIn] == mainList[xIn + 1][yIn]:
-                    print("you win")
+    xBlack = []
+    yBlack = []
+    xWhite = []
+    yWhite = []
+    for i in range(size):
+        for j in range(size):
+            if mainList[i][j] == 255:
+                xBlack.append(i)
+                yBlack.append(j)
+            if mainList[i][j] == 128:
+                xWhite.append(i)
+                yWhite.append(j)
+    xB = set(xBlack)
+    for i in xB:
+        countXB = 0
+        for j in xBlack:
+            if i == j:
+                countXB += 1
+            if countXB >= 5:
+                print("you win XB")
+    yB = set(yBlack)
+    for i in yB:
+        countYB = 0
+        for j in yBlack:
+            if i == j:
+                countYB += 1
+            if countYB >= 5:
+                print("you win YB")
+    xW = set(xWhite)
+    for i in xW:
+        countXW = 0
+        for j in xWhite:
+            if i == j:
+                countXW += 1
+            if countXW >= 5:
+                print("you win XW")
+    yW = set(yWhite)
+    for i in yW:
+        countYW = 0
+        for j in yWhite:
+            if i == j:
+                countYW += 1
+            if countYW >= 5:
+                print("you win YW")
 
 # 主体：l
 while True:
