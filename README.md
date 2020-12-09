@@ -1,6 +1,6 @@
 # CSE205_Project3
 
-【project3_groupWorks】文件夹为运行环境，可以直接导入pycharm（注：仅限64位WIN10）
+【pyCharmpackage】文件夹为运行环境，可以直接导入pycharm（注：64位WIN10）
 
 【历史版本History】文件夹保存了所有有阶段性成果的版本。已推出正式版。
 
