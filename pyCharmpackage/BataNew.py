@@ -74,9 +74,9 @@ def printBoard(a):  # 主体function
             print(i + 1, end="")
         for j in range(size):  # 遍历棋盘X轴，判断棋值，如果为255打印黑棋符号，128打印白棋符号，1打印空符号
             if mainList[i][j] == 255:
-                print(" ⊡ ", end="")
+                print("\033[0;35;45m ◙ \033[0m", end="")
             if mainList[i][j] == 128:
-                print(" ◙ ", end="")
+                print("\033[0;30;40m ⊡ \033[0m", end="")
             elif mainList[i][j] == 1:
                 print(" ◌ ", end="")
         print("\n")  # 换行
