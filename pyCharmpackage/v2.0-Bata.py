@@ -1,11 +1,18 @@
 # -*- coding = utf-8 -*-
+
+# 用数组定义一个棋盘，棋盘大小为 15×15
+# 数组索引代表位置，
+# 元素值代表该位置的状态：0代表没有棋子，1代表有黑棋，-1代表有白棋。
+
 import numpy as np
 from tkinter import *
 from tkinter.messagebox import *
 
-class Chess:
+
+class Chess(object):
 
     def __init__(self):
+
         self.row, self.column = 15, 15
         self.mesh = 25
         self.ratio = 0.9
@@ -19,6 +26,7 @@ class Chess:
         self.is_start = False
         self.is_black = True
         self.last_p = None
+
 
         self.root = Tk()
         self.root.title("Gobang By Young")
@@ -47,212 +55,153 @@ class Chess:
 
         self.root.mainloop()
 
-    def printBoard(self, a):
-        theWinner = self.bw(a)
-        if theWinner == "black win" or theWinner == "white win":
-            print("----------------------")
-            print("                      ")
-            print("    ", theWinner)
-            print("                      ")
-            print("----------------------")
-            return -1
-        elif a != 1:
-            self.clean()
-        print("   1      3      5      7      9     11     13     15")
-        for i in range(size):
-            if i < 9:
-                print(i + 1, end=" ")
-            else:
-                print(i + 1, end="")
-            for j in range(size):
-                if mainList[i][j] == 255:
-                    print("\033[0;35;45m ◙ \033[0m", end="")
-                if mainList[i][j] == 128:
-                    print("\033[0;30;40m ⊡ \033[0m", end="")
-                elif mainList[i][j] == 1:
-                    print(" ◌ ", end="")
-            print("\n")
-        return a
+    # 画x行y列处的网格
+    def draw_mesh(self, x, y):
+        # 一个倍率，由于tkinter操蛋的GUI，如果不加倍率，悔棋的时候会有一点痕迹，可以试试把这个改为1，就可以看到
+        ratio = (1 - self.ratio) * 0.99 + 1
+        center_x, center_y = self.mesh * (x + 1), self.mesh * (y + 1)
+        # 先画背景色
+        self.c_chess.create_rectangle(center_y - self.step, center_x - self.step,
+                                      center_y + self.step, center_x + self.step,
+                                      fill=self.board_color, outline=self.board_color)
+        # 再画网格线，这里面a b c d是不同的系数，根据x,y不同位置确定，需要一定推导。
+        a, b = [0, ratio] if y == 0 else [-ratio, 0] if y == self.row - 1 else [-ratio, ratio]
+        c, d = [0, ratio] if x == 0 else [-ratio, 0] if x == self.column - 1 else [-ratio, ratio]
+        self.c_chess.create_line(center_y + a * self.step, center_x, center_y + b * self.step, center_x)
+        self.c_chess.create_line(center_y, center_x + c * self.step, center_y, center_x + d * self.step)
 
-    def bw(self, a):
-        if a != 1:
-            testWinner = self.testWin()
-            if testWinner == "black win" or testWinner == "white win":
-                return testWinner
-            else:
-                if a % 2 == 0:
-                    while True:
-                        try:
-                            x, y = input('【黑棋】x,y:').split(",")
-                            x = int(x) - 1
-                            y = int(y) - 1
-                        except BaseException:
-                            print("<input error, try again>")
-                        else:
-                            if mainList[x][y] != 1:
-                                print("<input overlap, try again>")
-                            else:
-                                mainList[x][y] = 255
-                                break
+        # 有一些特殊的点要画小黑点
+        if ((x == 3 or x == 11) and (y == 3 or y == 11)) or (x == 7 and y == 7):
+            self.c_chess.create_oval(center_y - self.point_r, center_x - self.point_r,
+                                     center_y + self.point_r, center_x + self.point_r, fill="black")
+
+    # 画x行y列处的棋子，color指定棋子颜色
+    def draw_chess(self, x, y, color):
+        center_x, center_y = self.mesh * (x + 1), self.mesh * (y + 1)
+        # 就是画个圆
+        self.c_chess.create_oval(center_y - self.chess_r, center_x - self.chess_r,
+                                 center_y + self.chess_r, center_x + self.chess_r,
+                                 fill=color)
+
+    # 画整个棋盘
+    def draw_board(self):
+        [self.draw_mesh(x, y) for y in range(self.column) for x in range(self.row)]
+
+    # 在正中间显示文字
+    def center_show(self, text):
+        width, height = int(self.c_chess['width']), int(self.c_chess['height'])
+        self.c_chess.create_text(int(width / 2), int(height / 2), text=text, font=("黑体", 30, "bold"), fill="red")
+
+    # 开始的时候设置各个组件，变量的状态，初始化matrix矩阵，初始化棋盘，初始化信息
+    def bf_start(self):
+        self.set_btn_state("start")
+        self.is_start = True
+        self.is_black = True
+        self.matrix = [[0 for y in range(self.column)] for x in range(self.row)]
+        self.draw_board()
+        self.l_info.config(text="黑方下棋")
+
+    # 重来跟开始的效果一样
+    def bf_restart(self):
+        self.bf_start()
+
+    # 用last_p来标识上一步的位置。先用网格覆盖掉棋子，操作相应的变量，matrix[x][y]要置空，只能悔一次棋
+    def bf_regret(self):
+        if not self.last_p:
+            showinfo("提示", "现在不能悔棋")
+            return
+        x, y = self.last_p
+        self.draw_mesh(x, y)
+        self.matrix[x][y] = 0
+        self.last_p = None
+        self.trans_identify()
+
+    # 几个状态改变，还有显示文字，没什么说的
+    def bf_lose(self):
+        self.set_btn_state("init")
+        self.is_start = False
+        text = self.ternary_operator("黑方认输", "白方认输")
+        self.l_info.config(text=text)
+        self.center_show("蔡")
+
+    # Canvas的click事件
+    def cf_board(self, e):
+        # 找到离点击点最近的坐标
+        x, y = int((e.y - self.step) / self.mesh), int((e.x - self.step) / self.mesh)
+        # 找到该坐标的中心点位置
+        center_x, center_y = self.mesh * (x + 1), self.mesh * (y + 1)
+        # 计算点击点到中心的距离
+        distance = ((center_x - e.y) ** 2 + (center_y - e.x) ** 2) ** 0.5
+        # 如果距离不在规定的圆内，退出//如果这个位置已经有棋子，退出//如果游戏还没开始，退出
+        if distance > self.step * 0.95 or self.matrix[x][y] != 0 or not self.is_start:
+            return
+        # 此时棋子的颜色，和matrix中该棋子的标识。
+        color = self.ternary_operator("black", "white")
+        tag = self.ternary_operator(1, -1)
+        # 先画棋子，在修改matrix相应点的值，用last_p记录本次操作点
+        self.draw_chess(x, y, color)
+        self.matrix[x][y] = tag
+        self.last_p = [x, y]
+        # 如果赢了，则游戏结束，修改状态，中心显示某方获胜
+        if self.is_win(x, y, tag):
+            self.is_start = False
+            self.set_btn_state("init")
+            text = self.ternary_operator("黑方获胜", "白方获胜")
+            self.center_show(text)
+            return
+        # 如果游戏继续，则交换棋手
+        self.trans_identify()
+
+    def is_win(self, x, y, tag):
+        # 获取斜方向的列表
+        def direction(i, j, di, dj, row, column, matrix):
+            temp = []
+            while 0 <= i < row and 0 <= j < column:
+                i, j = i + di, j + dj
+            i, j = i - di, j - dj
+            while 0 <= i < row and 0 <= j < column:
+                temp.append(matrix[i][j])
+                i, j = i - di, j - dj
+            return temp
+
+        four_direction = []
+        # 获取水平和竖直方向的列表
+        four_direction.append([self.matrix[i][y] for i in range(self.row)])
+        four_direction.append([self.matrix[x][j] for j in range(self.column)])
+        # 获取斜方向的列表
+        four_direction.append(direction(x, y, 1, 1, self.row, self.column, self.matrix))
+        four_direction.append(direction(x, y, 1, -1, self.row, self.column, self.matrix))
+
+        # 一一查看这四个方向，有没有满足五子连珠
+        for v_list in four_direction:
+            count = 0
+            for v in v_list:
+                if v == tag:
+                    count += 1
+                    if count == 5:
+                        return True
                 else:
-                    while True:
-                        try:
-                            x, y = input('【白棋】x,y:').split(",")
-                            x = int(x) - 1
-                            y = int(y) - 1
-                        except BaseException:
-                            print("<input error, try again>")
-                        else:
-                            if mainList[x][y] != 1:
-                                print("<input overlap, try again>")
-                            else:
-                                mainList[x][y] = 128
-                                break
-                return ""  # 【返回1.2】
+                    count = 0
+        return False
 
-    def clean(self):
-        for i in range(size):
-            print()
+    # 设置四个按钮是否可以点击
+    def set_btn_state(self, state):
+        state_list = [NORMAL, DISABLED, DISABLED, DISABLED] if state == "init" else [DISABLED, NORMAL, NORMAL, NORMAL]
+        self.b_start.config(state=state_list[0])
+        self.b_restart.config(state=state_list[1])
+        self.b_regret.config(state=state_list[2])
+        self.b_lose.config(state=state_list[3])
 
-    @property
-    def testWin(self):
-        xBlack = []
-        yBlack = []
-        xWhite = []
-        yWhite = []
-        for i in range(size):
-            for j in range(size):
-                if mainList[i][j] == 255:
-                    xBlack.append(i)
-                    yBlack.append(j)
-                if mainList[i][j] == 128:
-                    xWhite.append(i)
-                    yWhite.append(j)
-        xB = set(xBlack)
-        for i in xB:
-            countXB = 0
-            for j in xBlack:
-                if i == j:
-                    countXB += 1
-                if countXB >= 5:
-                    return "black win"
-        yB = set(yBlack)
-        for i in yB:
-            countYB = 0
-            for j in yBlack:
-                if i == j:
-                    countYB += 1
-                if countYB >= 5:
-                    return "black win"
-        xW = set(xWhite)
-        for i in xW:
-            countXW = 0
-            for j in xWhite:
-                if i == j:
-                    countXW += 1
-                if countXW >= 5:
-                    return "white win"
-        yW = set(yWhite)
-        for i in yW:
-            countYW = 0
-            for j in yWhite:
-                if i == j:
-                    countYW += 1
-                if countYW >= 5:
-                    return "white win"
+    # 因为有很多和self.black相关的三元操作，所以就提取出来
+    def ternary_operator(self, true, false):
+        return true if self.is_black else false
 
-        for i in range(size):
-            for j in range(size):
-                try:
-                    if mainList[i][j] != 1:
-                        if mainList[i][j] == mainList[i + 1][j + 1]:
-                            i += 1
-                            j += 1
-                            if mainList[i][j] == mainList[i + 1][j + 1]:
-                                i += 1
-                                j += 1
-                                if mainList[i][j] == mainList[i + 1][j + 1]:
-                                    i += 1
-                                    j += 1
-                                    if mainList[i][j] == mainList[i + 1][j + 1]:
-                                        if mainList[i][j] == 128:
-                                            return "white win"
-                                        if mainList[i][j] == 255:
-                                            return "black win"
-                except BaseException:
-                    print(end="")
-        for i in range(size):
-            for j in range(size):
-                try:
-                    if mainList[i][j] != 1:
-                        if mainList[i][j] == mainList[i + 1][j - 1]:
-                            i += 1
-                            j += 1
-                            if mainList[i][j] == mainList[i + 1][j - 1]:
-                                i += 1
-                                j += 1
-                                if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
-                                    i += 1
-                                    j += 1
-                                    if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
-                                        if self.mainList[i][j] == 128:
-                                            return "white win"
-                                        if self.mainList[i][j] == 255:
-                                            return "black win"
-                except BaseException:
-                    print(end="")
-        for i in range(self.size):
-            for j in range(self.size):
-                try:
-                    if self.mainList[i][j] != 1:
-                        if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                            i += 1
-                            j += 1
-                            if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                                i += 1
-                                j += 1
-                                if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                                    i += 1
-                                    j += 1
-                                    if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                                        if self.mainList[i][j] == 128:
-                                            return "white win"
-                                        if self.mainList[i][j] == 255:
-                                            return "black win"
-                except BaseException:
-                    print(end="")
-        for i in range(self.size):
-            for j in range(self.size):
-                try:
-                    if self.mainList[i][j] != 1:
-                        if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                            i += 1
-                            j += 1
-                            if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                                i += 1
-                                j += 1
-                                if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                                    i += 1
-                                    j += 1
-                                    if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                                        if self.mainList[i][j] == 128:
-                                            return "white win"
-                                        if mainList[i][j] == 255:
-                                            return "black win"
-                except BaseException:
-                    print(end="")
-        return ""
+    # 交换棋手
+    def trans_identify(self):
+        self.is_black = not self.is_black
+        text = self.ternary_operator("黑方下棋", "白方下棋")
+        self.l_info.config(text=text)
 
 
-a = 1
-size = 15
-mainList = np.zeros((size, size))
-for i in range(size):
-    for j in range(size):
-        mainList[i][j] = 1
-while True:
-    a = Chess.printBoard(a)
-    if a == -1:
-        break
-    a += 1
-
+if __name__ == '__main__':
+    Chess()
