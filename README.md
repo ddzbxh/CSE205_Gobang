@@ -8,7 +8,7 @@
 
 *仅小组内部作业，谢绝参与。
 
-*This repository is for our project group only. Please do not participate in editing. Although your idea may be excellent, I cannot pass your request.
+*This repository is for our project group only.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
