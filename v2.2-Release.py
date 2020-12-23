@@ -264,7 +264,7 @@ class Chess:
                     check = True
                 else:
                     if self.language == 1:
-                        print("<无法识别的输入，请输入选项以选择，如大写A、B等")
+                        print("<无法识别的输入，请输入选项以选择，如大写A、B等>")
                     elif self.language == 2:
                         print("<input error, try again, give your choose as A, B, etc.>")
                 if not check:
@@ -290,7 +290,7 @@ class Chess:
                 self.term = 1
                 return True
             elif inp == "B" or inp == "b":
-                return True
+                return False
             else:
                 if self.language == 1:
                     print("<无法识别的输入，请输入选项以选择，如大写A、B等")
@@ -312,8 +312,8 @@ class Chess:
             elif inp == "B" or inp == "b":
                 self.askPB()
                 return True
-            elif inp == "C" or inp == "b":
-                return True
+            elif inp == "C" or inp == "c":
+                return False
             else:
                 if self.language == 1:
                     print("<无法识别的输入，请输入选项以选择，如大写A、B等")
