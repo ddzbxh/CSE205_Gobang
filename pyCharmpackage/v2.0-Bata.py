@@ -11,6 +11,7 @@ class Chess:
             for j in range(self.size):
                 self.mainList[i][j] = 1
         self.winner = ""
+        self.space = " "
         self.term = 1
         self.main()
 
@@ -47,12 +48,14 @@ class Chess:
             else:
                 print(i + 1, end="")
             for j in range(self.size):
+                print(self.space, end="")
                 if self.mainList[i][j] == 255:
-                    print("\033[0;35;45m ◙ \033[0m", end="")
+                    print("\033[0;35;45m◙\033[0m", end="")
                 if self.mainList[i][j] == 128:
-                    print("\033[0;30;40m ⊡ \033[0m", end="")
+                    print("\033[0;30;40m⊡\033[0m", end="")
                 elif self.mainList[i][j] == 1:
-                    print(" ◌ ", end="")
+                    print("◌", end="")
+                print(self.space, end="")
             print("\n")
 
     def printTheWinner(self):
@@ -68,14 +71,15 @@ class Chess:
         if self.term % 2 == 0:
             while True:
                 try:
-                    x, y = input('【黑棋】x,y:').split(",")
+                    xy = input('【黑棋】x,y:').split(",")
+                    x, y = xy.split(",")
                     x = int(x) - 1
                     y = int(y) - 1
                 except BaseException:
-                    print("<input error, try again>")
+                    print("<input error, try again, or type '256,256' for help>")
                 else:
                     if self.mainList[x][y] != 1:
-                        print("<input overlap, try again>")
+                        print("<input overlap, try again, or type '256,256' for help>")
                     else:
                         self.mainList[x][y] = 255
                         break
@@ -86,10 +90,10 @@ class Chess:
                     x = int(x) - 1
                     y = int(y) - 1
                 except BaseException:
-                    print("<input error, try again>")
+                    print("<input error, try again, or type '256,256' for help>")
                 else:
                     if self.mainList[x][y] != 1:
-                        print("<input overlap, try again>")
+                        print("<input overlap, try again, or type '256,256' for help>")
                     else:
                         self.mainList[x][y] = 128
                         break
@@ -224,6 +228,22 @@ class Chess:
                 except BaseException:
                     print(end="")
 
+    def askHelp(self):
+        while True:
+            try:
+                a = input('Help:')
+                x = int(x) - 1
+                y = int(y) - 1
+                if (x, y) == (255, 255):
+                    self.askHelp()
+            except BaseException:
+                print("<input error, try again, or type '256,256' for help>")
+            else:
+                if self.mainList[x][y] != 1:
+                    print("<input overlap, try again, or type '256,256' for help>")
+                else:
+                    self.mainList[x][y] = 255
+                    break
 
 if __name__ == '__main__':
     Chess()
