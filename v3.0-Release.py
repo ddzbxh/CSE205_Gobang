@@ -3,7 +3,7 @@
 import numpy as np
 import time
 import os
-
+import random
 
 class Chess:
 
@@ -26,7 +26,7 @@ class Chess:
                 self.mainList[i][j] = 1
         self.winner = ""
         self.space = " "
-        self.term = 1
+        self.term = 2
         self.checkHelp = True
         self.PBMode = True
         self.language = 1
@@ -92,6 +92,24 @@ class Chess:
         print(os.path.dirname(os.path.abspath(__file__)))
 
     def main(self):
+        while True:
+            if self.language == 1:
+                inp = input("A.双人模式\nB.人机模式\n>>>")
+            else:
+                inp = input("A.PVP\nB.BOT\n>>>")
+            if inp == "A" or inp == "a":
+                self.mainPVP()
+                return True
+            elif inp == "B" or inp == "b":
+                self.mainBOT()
+                return True
+            else:
+                if self.language == 1:
+                    print("<无法识别的输入，请输入选项以选择，如大写A、B等")
+                elif self.language == 2:
+                    print("<input error, try again, give your choose as A, B, etc.>")
+
+    def mainPVP(self):
         while self.term != -1:
             self.testWin()
             if self.winner == "black win" or self.winner == "white win":
@@ -107,6 +125,31 @@ class Chess:
                 else:
                     self.writeListB()
                 self.playOneStep()
+                if self.checkHelp:
+                    self.term += 1
+                    if not self.PBMode:
+                        print("\n"*self.size*2)
+                    else:
+                        print("-"*60)
+                else:
+                    self.askHelp()
+
+    def mainBOT(self):
+        while self.term != -1:
+            self.testWin()
+            if self.winner == "black win" or self.winner == "white win":
+                self.printTheWinner()
+                self.syn = open("data0.syn", "w", encoding='utf-8')
+                self.syn.write("")
+                self.syn.close()
+            else:
+                self.printXNums()
+                self.printBoard()
+                if self.term % 2 == 1:
+                    self.writeListA()
+                else:
+                    self.writeListB()
+                self.BOT()
                 if self.checkHelp:
                     self.term += 1
                     if not self.PBMode:
@@ -226,6 +269,86 @@ class Chess:
                         print("<输入需在坐标范围内，重试或输入“help”寻求帮助>")
                     elif self.language == 2:
                         print("<input should be within the range of coordinates, try again, or type 'help'>")
+
+    def BOT(self):
+        if self.term % 2 == 0:
+            x = 8
+            y = 8
+            while True:
+                try:
+                    a = random.randint(1, 4)
+                    if a == 1:
+                        while True:
+                            if self.mainList[x][y] != 1:
+                                x += 1
+                                y += 1
+                            else:
+                                break
+                    elif a == 2:
+                        while True:
+                            if self.mainList[x][y] != 1:
+                                x -= 1
+                                y -= 1
+                            else:
+                                break
+                    elif a == 3:
+                        while True:
+                            if self.mainList[x][y] != 1:
+                                x += 1
+                                y -= 1
+                            else:
+                                break
+                    elif a == 4:
+                        while True:
+                            if self.mainList[x][y] != 1:
+                                x -= 1
+                                y += 1
+                            else:
+                                break
+                    self.mainList[x][y] = 255
+                    self.syn = open("data0.syn", "a", encoding='utf-8')
+                    self.syn.write("[black]x,y:" + str(x) + "," + str(y) + "\n")
+                    self.syn.close()
+                except BaseException:
+                    print(end="")
+                else:
+                    break
+        else:
+            while True:
+                if self.language == 1:
+                    xy = input('【白棋】x,y:')
+                else:
+                    xy = input('[white]x,y:')
+                try:
+                    x, y = xy.split(",")
+                    x = int(x) - 1
+                    y = int(y) - 1
+                except BaseException:
+                    if xy == "help" or xy == "?" or xy == "？" or xy == "Help":
+                        self.checkHelp = False
+                        break
+                    if self.language == 1:
+                        print("<无法识别的输入，重试或输入“help”寻求帮助>")
+                    elif self.language == 2:
+                        print("<input error, try again, or type 'help'>")
+                else:
+                    try:
+                        if self.mainList[x][y] != 1:
+                            if self.language == 1:
+                                print("<此处已经落子，重试或输入“help”寻求帮助>")
+                            elif self.language == 2:
+                                print("<input overlap, try again, or type 'help'>")
+                        else:
+                            self.mainList[x][y] = 128
+                            self.syn = open("data0.syn", "a", encoding='utf-8')
+                            self.syn.write("[white]x,y:" + xy + "\n")
+                            self.syn.close()
+                            break
+                    except BaseException:
+                        if self.language == 1:
+                            print("<输入需在坐标范围内，重试或输入“help”寻求帮助>")
+                        elif self.language == 2:
+                            print("<input should be within the range of coordinates, try again, or type 'help'>")
 
     def testWin(self):
         xBlack = []
@@ -432,9 +555,9 @@ class Chess:
     def askGame(self):
         while True:
             if self.language == 1:
-                inp = input("A.重新开始\nB.悔棋\nC.返回上级\n>>>")
+                inp = input("A.重新开始\nB.悔棋\nC.切换模式\nD.返回上级\n>>>")
             else:
-                inp = input("A.Restart\nB.Retract a False Move\nC.Back\n>>>")
+                inp = input("A.Restart\nB.Retract a False Move\nC.Switch game mode\nD.Back\n>>>")
             if inp == "A" or inp == "a":
                 self.mainList = np.zeros((self.size, self.size))
                 for i in range(self.size):
@@ -455,6 +578,9 @@ class Chess:
                 self.term -= 1
                 return True
             elif inp == "C" or inp == "c":
+                self.main()
+                return True
+            elif inp == "D" or inp == "d":
                 return False
             else:
                 if self.language == 1:
@@ -537,26 +663,26 @@ class Chess:
         if self.language == 1:
             print("-" * 30)
             print("project3，《五子棋》\n"
-                  "1.此为双人模式，两名玩家轮流走棋\n"
-                  "2.可识别的输入格式为【行】【英文逗号】【列】，不规范的输入将被驳回\n"
+                  "1.有“双人模式”和“人机”两种选择\n"
+                  "2.不规范的输入将被驳回\n"
                   "3.在已经落子的棋位下棋将被驳回\n"
                   "4.当有一方胜出，将会自动结束\n"
-                  "5.输入\"help\"或双语问号调整设置,选项以字母序号为反馈，不区分大小写\n"
-                  "6.悔棋功能只能反悔一步\n"
+                  "5.输入\"help\"或双语问号调整设置\n"
+                  "6.选项以字母序号为反馈,不区分大小写\n"
+                  "7.仅双人模式可以悔棋，且只能回溯一步\n"
                   "https://github.com/ddzbxh/CSE205_Project3\n"
                   , end="")
             print("-" * 30)
         elif self.language == 2:
             print("-" * 30)
             print("project3, Gobang\n"
-                  "1. This is a two-player mode, with two players playing chess in turn\n"
-                  "2. The recognizable input format is [row] [English comma] [column],\n"
-                  "\tand non-standard input will be rejected\n"
+                  "1. There are two choices: \"two-person mode\" and \"man-machine mode\"\n"
+                  "2. Non-standard input will be rejected\n"
                   "3. Playing in a position that has been played will be rejected\n"
                   "4. When one side wins, it automatically ends\n"
-                  "5. Enter \"help\" or bilingual question mark to adjust Settings,\n"
-                  "\toptions respond to alphabetic and are case-insensitive\n"
-                  "6.The regret function is only one step back\n"
+                  "5. Enter \"help\" or bilingual question mark to adjust Settings\n"
+                  "6. Options respond to alphabetic and are case-insensitive\n"
+                  "7. The regret function is only one step back and Only two-player mode can\n"
                   "https://github.com/ddzbxh/CSE205_Project3\n"
                   , end="")
             print("-" * 30)
