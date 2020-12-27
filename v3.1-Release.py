@@ -12,6 +12,7 @@ class Chess:
         return str(time.time())
 
     def __init__(self):
+        self.a = 1
         self.theTime = self.getTime()
         self.syn = open("data0.syn", "w", encoding='utf-8')
         self.syn.close()
@@ -92,6 +93,32 @@ class Chess:
         print(os.path.dirname(os.path.abspath(__file__)))
 
     def main(self):
+        while True:
+            if self.language == 1:
+                inp = input("A.双人模式\nB.人机模式\n>>>")
+            else:
+                inp = input("A.PVP\nB.BOT\n>>>")
+            if inp == "A" or inp == "a":
+                self.mainPVP()
+                return True
+            elif inp == "B" or inp == "b":
+                self.mainBOT()
+                return True
+            else:
+                if self.language == 1:
+                    print("<无法识别的输入，请输入选项以选择，如大写A、B等")
+                elif self.language == 2:
+                    print("<input error, try again, give your choose as A, B, etc.>")
+
+    def mainS(self):
+        self.checkHelp = True
+        self.mainList = np.zeros((self.size, self.size))
+        for i in range(self.size):
+            for j in range(self.size):
+                self.mainList[i][j] = 1
+        self.winner = ""
+        self.space = " "
+        self.term = 2
         while True:
             if self.language == 1:
                 inp = input("A.双人模式\nB.人机模式\n>>>")
@@ -276,7 +303,7 @@ class Chess:
             y = 8
             while True:
                 try:
-                    a = random.randint(1, 4)
+                    a = self.a
                     if a == 1:
                         while True:
                             if self.mainList[x][y] != 1:
@@ -310,7 +337,7 @@ class Chess:
                     self.syn.write("[black]x,y:" + str(x) + "," + str(y) + "\n")
                     self.syn.close()
                 except BaseException:
-                    print(end="")
+                    self.a = random.randint(1, 4)
                 else:
                     break
         else:
@@ -483,7 +510,7 @@ class Chess:
     def askWin(self):
         while True:
             if self.language == 1:
-                inp = input("A.直接重新开始\nB.保存棋谱并重新开始\nC.退出\nD.保存棋谱并退出\nn>>>")
+                inp = input("A.直接重新开始\nB.保存棋谱并重新开始\nC.退出\nD.保存棋谱并退出\n>>>")
             else:
                 inp = input('A.Restart\nB.Save chess board than Restart\nC.EXIT\nD.Save chess board than EXIT\n>>>')
             if inp == "A" or inp == "a":
@@ -578,7 +605,7 @@ class Chess:
                 self.term -= 1
                 return True
             elif inp == "C" or inp == "c":
-                self.main()
+                self.mainS()
                 return True
             elif inp == "D" or inp == "d":
                 return False
@@ -591,9 +618,9 @@ class Chess:
     def askPara(self):
         while True:
             if self.language == 1:
-                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.调整棋盘大小并重新开始\nD.恢复默认\nE.返回上级\n>>>")
+                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.调整棋盘大小并重新开始\nD.恢复默认并重新开始\nE.返回上级\n>>>")
             else:
-                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.Resize board and restart\nD.Restore default Settings\nE.Back\n>>>")
+                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.Resize board and restart\nD.Restore default Settings and restart\nE.Back\n>>>")
             if inp == "A" or inp == "a":
                 if self.language == 1:
                     self.space = input("间隔字符:")
@@ -617,9 +644,19 @@ class Chess:
                 self.term = 1
                 return True
             elif inp == "D" or inp == "d":
-                self.PBMode = True
                 self.size = 15
                 self.space = " "
+                self.PBMode = True
+                self.mainList = np.zeros((self.size, self.size))
+                for i in range(self.size):
+                    for j in range(self.size):
+                        self.mainList[i][j] = 1
+                self.winner = ""
+                self.space = " "
+                self.term = 1
+                self.syn = open("data0.syn", "w")
+                self.syn.write("")
+                self.syn.close()
                 return True
             elif inp == "E" or inp == "e":
                 return False
