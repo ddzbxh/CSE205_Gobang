@@ -35,6 +35,7 @@ class Chess:
         self.checkHelp = True
         self.PBMode = True
         self.language = 1
+        self.XLine = 2
 
         self.askLanguage()
         self.direction()
@@ -150,8 +151,12 @@ class Chess:
                 self.syn.write("")
                 self.syn.close()
             else:
-                self.printXNums()
-                self.printBoard()
+                if self.XLine == 1:
+                    self.printXNums()
+                    self.printBoard()
+                else:
+                    self.printBoard()
+                    self.printXNums()
                 if self.term % 2 == 1:
                     self.writeListA()
                 else:
@@ -175,8 +180,12 @@ class Chess:
                 self.syn.write("-"*self.size + "\n" + self.winner)
                 self.syn.close()
             else:
-                self.printXNums()
-                self.printBoard()
+                if self.XLine == 1:
+                    self.printXNums()
+                    self.printBoard()
+                else:
+                    self.printBoard()
+                    self.printXNums()
                 if self.term % 2 == 1:
                     self.writeListA()
                 else:
@@ -697,9 +706,9 @@ class Chess:
     def askPara(self):
         while True:
             if self.language == 1:
-                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.调整棋盘大小并重新开始\nD.恢复默认并重新开始\nE.返回上级\n>>>")
+                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.横坐标上下位置\nD.调整棋盘大小并重新开始\nE.恢复默认并重新开始\nF.返回上级\n>>>")
             else:
-                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.Resize board and restart\nD.Restore default Settings and restart\nE.Back\n>>>")
+                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.X-axis upside / down side\nD.Resize board and restart\nE.Restore default Settings and restart\nF.Back\n>>>")
             if inp == "A" or inp == "a":
                 if self.language == 1:
                     self.space = input("间隔字符:")
@@ -710,6 +719,9 @@ class Chess:
                 self.askPB()
                 return True
             elif inp == "C" or inp == "c":
+                self.askXL()
+                return True
+            elif inp == "D" or inp == "d":
                 if self.language == 1:
                     self.size = int(input("边长(默认15):"))
                 else:
@@ -722,7 +734,7 @@ class Chess:
                 self.space = " "
                 self.term = 1
                 return True
-            elif inp == "D" or inp == "d":
+            elif inp == "E" or inp == "e":
                 self.size = 15
                 self.space = " "
                 self.PBMode = True
@@ -737,7 +749,7 @@ class Chess:
                 self.syn.write("")
                 self.syn.close()
                 return True
-            elif inp == "E" or inp == "e":
+            elif inp == "F" or inp == "f":
                 return False
             else:
                 if self.language == 1:
@@ -756,6 +768,24 @@ class Chess:
                 return True
             elif inp == "B" or inp == "b":
                 self.PBMode = False
+                return True
+            else:
+                if self.language == 1:
+                    print("<无法识别的输入，请输入选项以选择，如大写A、B等")
+                elif self.language == 2:
+                    print("<input error, try again, give your choose as A, B, etc.>")
+
+    def askXL(self):
+        while True:
+            if self.language == 1:
+                inp = input("A.横坐标在上\nB.横坐标在下\n>>>")
+            else:
+                inp = input("A.X-axis on top\nB.X-axis down below\n>>>")
+            if inp == "A" or inp == "a":
+                self.XLine = 1
+                return True
+            elif inp == "B" or inp == "b":
+                self.XLine = 2
                 return True
             else:
                 if self.language == 1:
