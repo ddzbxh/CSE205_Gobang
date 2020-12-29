@@ -13,6 +13,10 @@ class Chess:
 
     def __init__(self):
         self.a = 1
+        self.b = 1
+        self.c = 1
+        self.x = 8
+        self.y = 8
         self.theTime = self.getTime()
         self.syn = open("data0.syn", "w", encoding='utf-8')
         self.syn.close()
@@ -31,6 +35,7 @@ class Chess:
         self.checkHelp = True
         self.PBMode = True
         self.language = 1
+
         self.askLanguage()
         self.direction()
         self.main()
@@ -167,7 +172,7 @@ class Chess:
             if self.winner == "black win" or self.winner == "white win":
                 self.printTheWinner()
                 self.syn = open("data0.syn", "w", encoding='utf-8')
-                self.syn.write("")
+                self.syn.write("-"*self.size + "\n" + self.winner)
                 self.syn.close()
             else:
                 self.printXNums()
@@ -240,6 +245,8 @@ class Chess:
 
     def printTheWinner(self):
         if self.winner == "black win" or self.winner == "white win":
+            self.printXNums()
+            self.printBoard()
             print("-" * 30, "\n", "*" * 30, sep="")
             print(" " * 10, self.winner, "\n", "*" * 30, sep="")
             print("-" * 30)
@@ -261,7 +268,7 @@ class Chess:
                 else:
                     xy = input('[white]x,y:')
             try:
-                x, y = xy.split(",")
+                y, x = xy.split(",")
                 x = int(x) - 1
                 y = int(y) - 1
             except BaseException:
@@ -299,55 +306,151 @@ class Chess:
 
     def BOT(self):
         if self.term % 2 == 0:
-            x = 8
-            y = 8
+            while True:
+                for i in range(self.size):
+                    for j in range(self.size):
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i][j + 1] == 128:
+                                    if self.mainList[i][j + 2] == 128:
+                                        if self.mainList[i][j + 3] == 1:
+                                            self.mainList[i][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i][j - 1] == 1:
+                                            self.mainList[i][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i + 1][j] == 128:
+                                    if self.mainList[i + 2][j] == 128:
+                                        if self.mainList[i + 3][j] == 1:
+                                            self.mainList[i + 3][j] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j] == 1:
+                                            self.mainList[i - 1][j] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i + 1][j + 1] == 128:
+                                    if self.mainList[i + 2][j + 2] == 128:
+                                        if self.mainList[i + 3][j + 3] == 1:
+                                            self.mainList[i + 3][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j - 1] == 1:
+                                            self.mainList[i - 1][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i + 1][j - 1] == 128:
+                                    if self.mainList[i + 2][j - 2] == 128:
+                                        if self.mainList[i + 3][j - 3] == 1:
+                                            self.mainList[i + 3][j - 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j + 1] == 1:
+                                            self.mainList[i - 1][j + 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i - 1][j + 1] == 128:
+                                    if self.mainList[i - 2][j + 2] == 128:
+                                        if self.mainList[i - 3][j + 3] == 1:
+                                            self.mainList[i - 3][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i + 1][j - 1] == 1:
+                                            self.mainList[i + 1][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 128:
+                                if self.mainList[i - 1][j - 1] == 128:
+                                    if self.mainList[i - 2][j - 2] == 128:
+                                        if self.mainList[i - 3][j - 3] == 1:
+                                            self.mainList[i - 3][j - 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i + 1][j + 1] == 1:
+                                            self.mainList[i + 1][j + 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                break
+
+        if self.term % 2 == 0 and self.c == 1:
             while True:
                 try:
                     a = self.a
-                    if a == 1:
-                        while True:
-                            if self.mainList[x][y] != 1:
-                                x += 1
-                                y += 1
-                            else:
-                                break
-                    elif a == 2:
-                        while True:
-                            if self.mainList[x][y] != 1:
-                                x -= 1
-                                y -= 1
-                            else:
-                                break
-                    elif a == 3:
-                        while True:
-                            if self.mainList[x][y] != 1:
-                                x += 1
-                                y -= 1
-                            else:
-                                break
-                    elif a == 4:
-                        while True:
-                            if self.mainList[x][y] != 1:
-                                x -= 1
-                                y += 1
-                            else:
-                                break
-                    self.mainList[x][y] = 255
-                    self.syn = open("data0.syn", "a", encoding='utf-8')
-                    self.syn.write("[black]x,y:" + str(x) + "," + str(y) + "\n")
-                    self.syn.close()
+                    if a > 75:
+                        if self.mainList[self.x][self.y] != 1:
+                            self.x += 1
+                            self.y += 1
+                            self.b += 1
+                    elif a > 50:
+                        if self.mainList[self.x][self.y] != 1:
+                            self.x -= 1
+                            self.y -= 1
+                            self.b += 1
+                    elif a > 25:
+                        if self.mainList[self.x][self.y] != 1:
+                            self.x += 1
+                            self.y -= 1
+                            self.b += 1
+                    else:
+                        if self.mainList[self.x][self.y] != 1:
+                            self.x -= 1
+                            self.y += 1
+                            self.b += 1
                 except BaseException:
-                    self.a = random.randint(1, 4)
-                else:
-                    break
-        else:
+                    if self.b % 3 != 0:
+                        self.x = random.randint(3, 13)
+                        self.y = random.randint(3, 13)
+                        self.a = random.randint(0, 100)
+                try:
+                    if self.mainList[self.x][self.y] == 1:
+                        self.mainList[self.x][self.y] = 255
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("[black]x,y:" + str(self.x + 1) + "," + str(self.y + 1) + "\n")
+                        self.syn.close()
+                        break
+                    else:
+                        self.x = random.randint(3, 13)
+                        self.y = random.randint(3, 13)
+                        self.a = random.randint(0, 100)
+                except BaseException:
+                    self.x = random.randint(3, 13)
+                    self.y = random.randint(3, 13)
+                    self.a = random.randint(0, 100)
+
+        if self.c == 0:
+            self.c = 1
+
+        if self.term % 2 == 1:
             while True:
                 if self.language == 1:
                     xy = input('【白棋】x,y:')
                 else:
                     xy = input('[white]x,y:')
                 try:
-                    x, y = xy.split(",")
+                    y, x = xy.split(",")
                     x = int(x) - 1
                     y = int(y) - 1
                 except BaseException:
@@ -378,53 +481,38 @@ class Chess:
                             print("<input should be within the range of coordinates, try again, or type 'help'>")
 
     def testWin(self):
-        xBlack = []
-        yBlack = []
-        xWhite = []
-        yWhite = []
         for i in range(self.size):
             for j in range(self.size):
-                if self.mainList[i][j] == 255:
-                    xBlack.append(i)
-                    yBlack.append(j)
-                if self.mainList[i][j] == 128:
-                    xWhite.append(i)
-                    yWhite.append(j)
-        xB = set(xBlack)
-        for i in xB:
-            countXB = 0
-            for j in xBlack:
-                if i == j:
-                    countXB += 1
-                if countXB >= 5:
-                    self.winner = "black win"
-        yB = set(yBlack)
-        for i in yB:
-            countYB = 0
-            for j in yBlack:
-                if i == j:
-                    countYB += 1
-                if countYB >= 5:
-                    self.winner = "black win"
-        xW = set(xWhite)
-        for i in xW:
-            countXW = 0
-            for j in xWhite:
-                if i == j:
-                    countXW += 1
-                if countXW >= 5:
-                    self.winner = "white win"
-        yW = set(yWhite)
-        for i in yW:
-            countYW = 0
-            for j in yWhite:
-                if i == j:
-                    countYW += 1
-                if countYW >= 5:
-                    self.winner = "white win"
-
-        for i in range(self.size):
-            for j in range(self.size):
+                try:
+                    if self.mainList[i][j] != 1:
+                        if self.mainList[i][j] == self.mainList[i][j + 1]:
+                            j += 1
+                            if self.mainList[i][j] == self.mainList[i][j + 1]:
+                                j += 1
+                                if self.mainList[i][j] == self.mainList[i][j + 1]:
+                                    j += 1
+                                    if self.mainList[i][j] == self.mainList[i][j + 1]:
+                                        if self.mainList[i][j] == 128:
+                                            self.winner = "white win"
+                                        if self.mainList[i][j] == 255:
+                                            self.winner = "black win"
+                except BaseException:
+                    print(end="")
+                try:
+                    if self.mainList[i][j] != 1:
+                        if self.mainList[i][j] == self.mainList[i + 1][j]:
+                            i += 1
+                            if self.mainList[i][j] == self.mainList[i + 1][j]:
+                                i += 1
+                                if self.mainList[i][j] == self.mainList[i + 1][j]:
+                                    i += 1
+                                    if self.mainList[i][j] == self.mainList[i + 1][j]:
+                                        if self.mainList[i][j] == 128:
+                                            self.winner = "white win"
+                                        if self.mainList[i][j] == 255:
+                                            self.winner = "black win"
+                except BaseException:
+                    print(end="")
                 try:
                     if self.mainList[i][j] != 1:
                         if self.mainList[i][j] == self.mainList[i + 1][j + 1]:
@@ -443,20 +531,17 @@ class Chess:
                                             self.winner = "black win"
                 except BaseException:
                     print(end="")
-
-        for i in range(self.size):
-            for j in range(self.size):
                 try:
                     if self.mainList[i][j] != 1:
                         if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
                             i += 1
-                            j += 1
+                            j -= 1
                             if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
                                 i += 1
-                                j += 1
+                                j -= 1
                                 if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
                                     i += 1
-                                    j += 1
+                                    j -= 1
                                     if self.mainList[i][j] == self.mainList[i + 1][j - 1]:
                                         if self.mainList[i][j] == 128:
                                             self.winner = "white win"
@@ -464,19 +549,16 @@ class Chess:
                                             self.winner = "black win"
                 except BaseException:
                     print(end="")
-
-        for i in range(self.size):
-            for j in range(self.size):
                 try:
                     if self.mainList[i][j] != 1:
                         if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                            i += 1
+                            i -= 1
                             j += 1
                             if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                                i += 1
+                                i -= 1
                                 j += 1
                                 if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
-                                    i += 1
+                                    i -= 1
                                     j += 1
                                     if self.mainList[i][j] == self.mainList[i - 1][j + 1]:
                                         if self.mainList[i][j] == 128:
@@ -485,20 +567,17 @@ class Chess:
                                             self.winner = "black win"
                 except BaseException:
                     print(end="")
-
-        for i in range(self.size):
-            for j in range(self.size):
                 try:
                     if self.mainList[i][j] != 1:
                         if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                            i += 1
-                            j += 1
+                            i -= 1
+                            j -= 1
                             if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                                i += 1
-                                j += 1
+                                i -= 1
+                                j -= 1
                                 if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
-                                    i += 1
-                                    j += 1
+                                    i -= 1
+                                    j -= 1
                                     if self.mainList[i][j] == self.mainList[i - 1][j - 1]:
                                         if self.mainList[i][j] == 128:
                                             self.winner = "white win"
