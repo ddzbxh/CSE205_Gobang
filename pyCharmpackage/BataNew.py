@@ -15,8 +15,8 @@ class Chess:
         self.a = 1
         self.b = 1
         self.c = 1
-        self.x = 8
-        self.y = 8
+        self.x = 7
+        self.y = 7
         self.theTime = self.getTime()
         self.syn = open("data0.syn", "w", encoding='utf-8')
         self.syn.close()
@@ -36,7 +36,10 @@ class Chess:
         self.PBMode = True
         self.language = 1
         self.XLine = 2
-
+        self.YLine = 2
+        self.InpStr = ","
+        self.InpMod = 1
+        self.InpTerm = 1
         self.askLanguage()
         self.direction()
         self.main()
@@ -215,42 +218,80 @@ class Chess:
             print("\n")
 
     def printBoard(self):
-        for i in range(self.size):
-            if i < 9:
-                print(i + 1, end=" ")
-            else:
-                print(i + 1, end="")
-            for j in range(self.size):
-                print(self.space, end="")
+        if self.YLine == 1:
+            for i in range(self.size):
+                if i < 9:
+                    print(i + 1, end=" ")
+                else:
+                    print(i + 1, end="")
+                for j in range(self.size):
+                    print(self.space, end="")
+                    self.syn = open("data0.syn", "a", encoding='utf-8')
+                    self.syn.write(" ")
+                    self.syn.close()
+                    if self.mainList[i][j] == 255:
+                        print("\033[0;35;45m◙\033[0m", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("W")
+                        self.syn.close()
+                    if self.mainList[i][j] == 128:
+                        print("\033[0;30;40m⊡\033[0m", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("M")
+                        self.syn.close()
+                    elif self.mainList[i][j] == 1:
+                        print("◌", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("  ")
+                        self.syn.close()
+                    print(self.space, end="")
+                    self.syn = open("data0.syn", "a", encoding='utf-8')
+                    self.syn.write(" ")
+                    self.syn.close()
+                print("\n")
                 self.syn = open("data0.syn", "a", encoding='utf-8')
-                self.syn.write(" ")
+                self.syn.write("\n")
                 self.syn.close()
-                if self.mainList[i][j] == 255:
-                    print("\033[0;35;45m◙\033[0m", end="")
-                    self.syn = open("data0.syn", "a", encoding='utf-8')
-                    self.syn.write("W")
-                    self.syn.close()
-                if self.mainList[i][j] == 128:
-                    print("\033[0;30;40m⊡\033[0m", end="")
-                    self.syn = open("data0.syn", "a", encoding='utf-8')
-                    self.syn.write("M")
-                    self.syn.close()
-                elif self.mainList[i][j] == 1:
-                    print("◌", end="")
-                    self.syn = open("data0.syn", "a", encoding='utf-8')
-                    self.syn.write("  ")
-                    self.syn.close()
-                print(self.space, end="")
-                self.syn = open("data0.syn", "a", encoding='utf-8')
-                self.syn.write(" ")
-                self.syn.close()
-            print("\n")
             self.syn = open("data0.syn", "a", encoding='utf-8')
-            self.syn.write("\n")
+            self.syn.write("\n"+"-"*60+"\n")
             self.syn.close()
-        self.syn = open("data0.syn", "a", encoding='utf-8')
-        self.syn.write("\n"+"-"*60+"\n")
-        self.syn.close()
+        else:
+            for i in range(self.size - 1, -1, -1):
+                if i < 9:
+                    print(i + 1, end=" ")
+                else:
+                    print(i + 1, end="")
+                for j in range(self.size):
+                    print(self.space, end="")
+                    self.syn = open("data0.syn", "a", encoding='utf-8')
+                    self.syn.write(" ")
+                    self.syn.close()
+                    if self.mainList[i][j] == 255:
+                        print("\033[0;35;45m◙\033[0m", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("W")
+                        self.syn.close()
+                    if self.mainList[i][j] == 128:
+                        print("\033[0;30;40m⊡\033[0m", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("M")
+                        self.syn.close()
+                    elif self.mainList[i][j] == 1:
+                        print("◌", end="")
+                        self.syn = open("data0.syn", "a", encoding='utf-8')
+                        self.syn.write("  ")
+                        self.syn.close()
+                    print(self.space, end="")
+                    self.syn = open("data0.syn", "a", encoding='utf-8')
+                    self.syn.write(" ")
+                    self.syn.close()
+                print("\n")
+                self.syn = open("data0.syn", "a", encoding='utf-8')
+                self.syn.write("\n")
+                self.syn.close()
+            self.syn = open("data0.syn", "a", encoding='utf-8')
+            self.syn.write("\n"+"-"*60+"\n")
+            self.syn.close()
 
     def printTheWinner(self):
         if self.winner == "black win" or self.winner == "white win":
@@ -267,21 +308,49 @@ class Chess:
     def playOneStep(self):
         while True:
             if self.term % 2 == 0:
-                if self.language == 1:
-                    xy = input('【黑棋】x,y:')
+                if self.InpMod == 1:
+                    if self.language == 1:
+                        xy = input('【黑棋】x,y:')
+                    else:
+                        xy = input('[black]x,y:')
                 else:
-                    xy = input('[black]x,y:')
+                    if self.language == 1:
+                        x = input('【黑棋】\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
+                    else:
+                        x = input('[black]\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
             else:
-                if self.language == 1:
-                    xy = input('【白棋】x,y:')
+                if self.InpMod == 1:
+                    if self.language == 1:
+                        xy = input('【白棋】x,y:')
+                    else:
+                        xy = input('[white]x,y:')
                 else:
-                    xy = input('[white]x,y:')
+                    if self.language == 1:
+                        x = input('【白棋】\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
+                    else:
+                        x = input('[white]\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
             try:
-                y, x = xy.split(",")
+                if self.InpTerm == 1:
+                    y, x = xy.split(self.InpStr)
+                else:
+                    x, y = xy.split(self.InpStr)
                 x = int(x) - 1
                 y = int(y) - 1
             except BaseException:
-                if xy == "help" or xy == "?" or xy == "？" or xy == "Help":
+                a = "help" in xy
+                b = "?" in xy
+                c = "？" in xy
+                d = "Help" in xy
+                e = "what" in xy
+                if a or b or c or d or e:
                     self.checkHelp = False
                     break
                 if self.language == 1:
@@ -322,11 +391,11 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i][j + 1] == 128:
                                     if self.mainList[i][j + 2] == 128:
-                                        if self.mainList[i][j + 3] == 1:
+                                        if self.mainList[i][j + 3] == 1 and self.c == 1:
                                             self.mainList[i][j + 3] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i][j - 1] == 1:
+                                        elif self.mainList[i][j - 1] == 1 and self.c == 1:
                                             self.mainList[i][j - 1] = 255
                                             self.c = 0
                                             break
@@ -336,11 +405,11 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i + 1][j] == 128:
                                     if self.mainList[i + 2][j] == 128:
-                                        if self.mainList[i + 3][j] == 1:
+                                        if self.mainList[i + 3][j] == 1 and self.c == 1:
                                             self.mainList[i + 3][j] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i - 1][j] == 1:
+                                        elif self.mainList[i - 1][j] == 1 and self.c == 1:
                                             self.mainList[i - 1][j] = 255
                                             self.c = 0
                                             break
@@ -350,11 +419,11 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i + 1][j + 1] == 128:
                                     if self.mainList[i + 2][j + 2] == 128:
-                                        if self.mainList[i + 3][j + 3] == 1:
+                                        if self.mainList[i + 3][j + 3] == 1 and self.c == 1:
                                             self.mainList[i + 3][j + 3] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i - 1][j - 1] == 1:
+                                        elif self.mainList[i - 1][j - 1] == 1 and self.c == 1:
                                             self.mainList[i - 1][j - 1] = 255
                                             self.c = 0
                                             break
@@ -364,11 +433,11 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i + 1][j - 1] == 128:
                                     if self.mainList[i + 2][j - 2] == 128:
-                                        if self.mainList[i + 3][j - 3] == 1:
+                                        if self.mainList[i + 3][j - 3] == 1 and self.c == 1:
                                             self.mainList[i + 3][j - 3] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i - 1][j + 1] == 1:
+                                        elif self.mainList[i - 1][j + 1] == 1 and self.c == 1:
                                             self.mainList[i - 1][j + 1] = 255
                                             self.c = 0
                                             break
@@ -378,11 +447,11 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i - 1][j + 1] == 128:
                                     if self.mainList[i - 2][j + 2] == 128:
-                                        if self.mainList[i - 3][j + 3] == 1:
+                                        if self.mainList[i - 3][j + 3] == 1 and self.c == 1:
                                             self.mainList[i - 3][j + 3] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i + 1][j - 1] == 1:
+                                        elif self.mainList[i + 1][j - 1] == 1 and self.c == 1:
                                             self.mainList[i + 1][j - 1] = 255
                                             self.c = 0
                                             break
@@ -392,11 +461,95 @@ class Chess:
                             if self.mainList[i][j] == 128:
                                 if self.mainList[i - 1][j - 1] == 128:
                                     if self.mainList[i - 2][j - 2] == 128:
-                                        if self.mainList[i - 3][j - 3] == 1:
+                                        if self.mainList[i - 3][j - 3] == 1 and self.c == 1:
                                             self.mainList[i - 3][j - 3] = 255
                                             self.c = 0
                                             break
-                                        elif self.mainList[i + 1][j + 1] == 1:
+                                        elif self.mainList[i + 1][j + 1] == 1 and self.c == 1:
+                                            self.mainList[i + 1][j + 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i][j + 1] == 255:
+                                    if self.mainList[i][j + 2] == 255:
+                                        if self.mainList[i][j + 3] == 1 and self.c == 1:
+                                            self.mainList[i][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i][j - 1] == 1 and self.c == 1:
+                                            self.mainList[i][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i + 1][j] == 255:
+                                    if self.mainList[i + 2][j] == 255:
+                                        if self.mainList[i + 3][j] == 1 and self.c == 1:
+                                            self.mainList[i + 3][j] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j] == 1 and self.c == 1:
+                                            self.mainList[i - 1][j] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i + 1][j + 1] == 255:
+                                    if self.mainList[i + 2][j + 2] == 255:
+                                        if self.mainList[i + 3][j + 3] == 1 and self.c == 1:
+                                            self.mainList[i + 3][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j - 1] == 1 and self.c == 1:
+                                            self.mainList[i - 1][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i + 1][j - 1] == 255:
+                                    if self.mainList[i + 2][j - 2] == 255:
+                                        if self.mainList[i + 3][j - 3] == 1 and self.c == 1:
+                                            self.mainList[i + 3][j - 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i - 1][j + 1] == 1 and self.c == 1:
+                                            self.mainList[i - 1][j + 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i - 1][j + 1] == 255:
+                                    if self.mainList[i - 2][j + 2] == 255:
+                                        if self.mainList[i - 3][j + 3] == 1 and self.c == 1:
+                                            self.mainList[i - 3][j + 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i + 1][j - 1] == 1 and self.c == 1:
+                                            self.mainList[i + 1][j - 1] = 255
+                                            self.c = 0
+                                            break
+                        except BaseException:
+                            print(end="")
+                        try:
+                            if self.mainList[i][j] == 255:
+                                if self.mainList[i - 1][j - 1] == 255:
+                                    if self.mainList[i - 2][j - 2] == 255:
+                                        if self.mainList[i - 3][j - 3] == 1 and self.c == 1:
+                                            self.mainList[i - 3][j - 3] = 255
+                                            self.c = 0
+                                            break
+                                        elif self.mainList[i + 1][j + 1] == 1 and self.c == 1:
                                             self.mainList[i + 1][j + 1] = 255
                                             self.c = 0
                                             break
@@ -454,16 +607,34 @@ class Chess:
 
         if self.term % 2 == 1:
             while True:
-                if self.language == 1:
-                    xy = input('【白棋】x,y:')
+                if self.InpMod == 1:
+                    if self.language == 1:
+                        xy = input('【白棋】x,y:')
+                    else:
+                        xy = input('[white]x,y:')
                 else:
-                    xy = input('[white]x,y:')
+                    if self.language == 1:
+                        x = input('【白棋】\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
+                    else:
+                        x = input('[white]\nx:')
+                        y = input('y:')
+                        xy = x + self.InpStr + y
                 try:
-                    y, x = xy.split(",")
+                    if self.InpTerm == 1:
+                        y, x = xy.split(self.InpStr)
+                    else:
+                        x, y = xy.split(self.InpStr)
                     x = int(x) - 1
                     y = int(y) - 1
                 except BaseException:
-                    if xy == "help" or xy == "?" or xy == "？" or xy == "Help":
+                    a = "help" in xy
+                    b = "?" in xy
+                    c = "？" in xy
+                    d = "Help" in xy
+                    e = "what" in xy
+                    if a or b or c or d or e:
                         self.checkHelp = False
                         break
                     if self.language == 1:
@@ -639,21 +810,26 @@ class Chess:
             print("-" * 30)
             while True:
                 if self.language == 1:
-                    inp = input("A.游戏\nB.界面参数\nC.保存棋谱\nD.Language\nE.退出\n>>>")
+                    inp = input("A.游戏\nB.界面参数\nC.切换输入方式\nD.保存棋谱\nE.Language\nF.退出\nG.返回\n>>>")
                 else:
-                    inp = input('A.About game\nB.Change parameter\nC.Save chess board\nD.调整语言\nE.EXIT\n>>>')
+                    inp = input('A.About game\nB.Change parameter\nC.Change input function\nD.Save chess board\nE.调整语言\nF.EXIT\nG.Back\n>>>')
                 check = False
                 if inp == "A" or inp == "a":
                     check = self.askGame()
                 elif inp == "B" or inp == "b":
                     check = self.askPara()
                 elif inp == "C" or inp == "c":
+                    check = self.askInpFunction()
+                elif inp == "D" or inp == "d":
                     self.saveFile()
                     check = True
-                elif inp == "D" or inp == "d":
+                elif inp == "E" or inp == "e":
                     self.askLanguage()
                     check = True
-                elif inp == "E" or inp == "e":
+                elif inp == "F" or inp == "f":
+                    self.term = -1
+                    check = True
+                elif inp == "G" or inp == "g":
                     check = True
                 else:
                     if self.language == 1:
@@ -666,6 +842,36 @@ class Chess:
                     self.checkHelp = True
                     break
         print("-" * 30)
+
+    def askInpFunction(self):
+        while True:
+            if self.language == 1:
+                inp = input("*注：分隔符默认为英文逗号\nA.单行分隔符模式\nB.换行输入模式\nC.XY反转\nD.返回上级\n>>>")
+            else:
+                inp = input("*PS:The delimiter defaults to English comma\nA.Single-line delimiter mode\nB.Line feed input mode\nC.XY inversion\nD.Back\n>>>")
+            if inp == "A" or inp == "a":
+                self.InpMod = 1
+                if self.language == 1:
+                    self.InpStr = input("输入分隔符号：")
+                else:
+                    self.InpStr = input("Enter the separator:")
+                return True
+            elif inp == "B" or inp == "b":
+                self.InpMod = 2
+                return True
+            elif inp == "C" or inp == "c":
+                if self.InpTerm == 1:
+                    self.InpTerm = 2
+                else:
+                    self.InpTerm = 1
+                return True
+            elif inp == "D" or inp == "d":
+                return False
+            else:
+                if self.language == 1:
+                    print("<无法识别的输入，请输入选项以选择，如大写A、B等")
+                elif self.language == 2:
+                    print("<input error, try again, give your choose as A, B, etc.>")
 
     def askGame(self):
         while True:
@@ -706,9 +912,9 @@ class Chess:
     def askPara(self):
         while True:
             if self.language == 1:
-                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.横坐标上下位置\nD.调整棋盘大小并重新开始\nE.恢复默认并重新开始\nF.返回上级\n>>>")
+                inp = input("A.调整间隔字符\nB.棋盘刷新方式\nC.调整XY轴形式\nD.调整棋盘大小并重新开始\nE.恢复默认并重新开始\nF.返回上级\n>>>")
             else:
-                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.X-axis upside / down side\nD.Resize board and restart\nE.Restore default Settings and restart\nF.Back\n>>>")
+                inp = input("A.Change the space letter\nB.Checkerboard refresh mode\nC.Change Xy-axis mode\nD.Resize board and restart\nE.Restore default Settings and restart\nF.Back\n>>>")
             if inp == "A" or inp == "a":
                 if self.language == 1:
                     self.space = input("间隔字符:")
@@ -735,6 +941,8 @@ class Chess:
                 self.term = 1
                 return True
             elif inp == "E" or inp == "e":
+                self.XLine = 2
+                self.YLine = 2
                 self.size = 15
                 self.space = " "
                 self.PBMode = True
@@ -778,14 +986,20 @@ class Chess:
     def askXL(self):
         while True:
             if self.language == 1:
-                inp = input("A.横坐标在上\nB.横坐标在下\n>>>")
+                inp = input("A.X坐标在上\nB.X坐标在下\nC.Y轴反转\n>>>")
             else:
-                inp = input("A.X-axis on top\nB.X-axis down below\n>>>")
+                inp = input("A.X-axis on top\nB.X-axis down below\nC.Inversion Y-axis\n>>>")
             if inp == "A" or inp == "a":
                 self.XLine = 1
                 return True
             elif inp == "B" or inp == "b":
                 self.XLine = 2
+                return True
+            elif inp == "C" or inp == "c":
+                if self.YLine == 1:
+                    self.YLine = 2
+                else:
+                    self.YLine = 1
                 return True
             else:
                 if self.language == 1:
