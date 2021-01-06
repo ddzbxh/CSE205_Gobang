@@ -40,6 +40,7 @@ class Chess:
         self.InpStr = ","
         self.InpMod = 1
         self.InpTerm = 1
+        print("https://github.com/ddzbxh/CSE205_Project3")
         self.askLanguage()
         self.direction()
         self.main()
