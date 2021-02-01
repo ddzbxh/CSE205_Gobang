@@ -1,4 +1,4 @@
-# CSE205_Project3
+# CSE205_Project3_Gobang
 
 【pyCharmpackage】文件夹为开发环境，可以直接导入pycharm（注：64位WIN10）
 
