@@ -1,5 +1,7 @@
 # CSE205_Project3_Gobang
 
+五子棋。由于时间精力有限，主要研究了BOT算法，而没有制作UI。实际玩法为字符棋盘+输入坐标，游戏体验并不很好。
+
 【pyCharmpackage】文件夹为开发环境，可以直接导入pycharm（注：64位WIN10）
 
 【HistoryRelease】文件夹保存了历史版本。最新版也会放在主文件夹下。各版本说明见下。
