@@ -816,7 +816,7 @@ class Chess:
                   "5.输入\"help\"或双语问号调整设置\n"
                   "6.选项以字母序号为反馈,不区分大小写\n"
                   "7.仅双人模式可以悔棋，且只能回溯一步\n"
-                  "https://github.com/ddzbxh/CSE205_Project3\n"
+                  "https://github.com/SynthesisDu/CSE205_Gobang\n"
                   , end="")
             print("-" * 30)
         elif self.language == 2:
@@ -829,7 +829,7 @@ class Chess:
                   "5. Enter \"help\" or bilingual question mark to adjust Settings\n"
                   "6. Options respond to alphabetic and are case-insensitive\n"
                   "7. The regret function is only one step back and Only two-player mode can\n"
-                  "https://github.com/ddzbxh/CSE205_Project3\n"
+                  "https://github.com/SynthesisDu/CSE205_Gobang\n"
                   , end="")
             print("-" * 30)
 
